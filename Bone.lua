@@ -13,9 +13,6 @@ function Bone:new(lenght)
 	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
 	b.fixture = love.physics.newFixture( b.body, b.shape )
 
-
-
-
 	setmetatable(b, self)
 	self.__index = self
 	return b
@@ -23,7 +20,7 @@ end
 
 
 function Bone:draw()
-	
+
 
 	love.graphics.translate(self.body:getX(), self.body:getY())
 
@@ -34,6 +31,8 @@ function Bone:draw()
 
 	love.graphics.setColor( 0.8, 0.2, 0.2 )
 	love.graphics.circle('fill', 0, 0, 3, nil)
+
+	love.graphics.translate(-self.body:getX(), -self.body:getY())
 end
 
 return Bone
