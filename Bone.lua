@@ -1,17 +1,26 @@
 local Bone = {}
 
+love.graphics.setDefaultFilter("nearest", "nearest")
+local pixel = love.graphics.newImage("pixel.jpg")
+
 function Bone:new(lenght)
 	local b = {}
 
 	b.width = lenght
 	b.height = 10
 
-	b.ox = b.width / 2
-	b.oy = b.height / 2
+	b.ox = b.width * 0.5
+	b.oy = b.height * 0.5
 
-	b.body = love.physics.newBody( world, 100, 100, 'dynamic' )
+	b.body = love.physics.newBody( world, 200, 200, 'dynamic' )
 	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
 	b.fixture = love.physics.newFixture( b.body, b.shape )
+
+	b.fixture:setRestitution(0)
+
+	b.jointDistance = b.width * 0.45
+
+
 
 	setmetatable(b, self)
 	self.__index = self
@@ -19,20 +28,53 @@ function Bone:new(lenght)
 end
 
 
+function Bone:update()
+
+	local angle = self.body:getAngle()
+	local x, y = self.body:getPosition()
+
+	self.jointAx = x + math.cos( angle ) * self.jointDistance
+	self.jointAy = y + math.sin( angle ) * self.jointDistance
+
+	self.jointBx = x - math.cos( angle ) * self.jointDistance
+	self.jointBy = y - math.sin( angle ) * self.jointDistance
+end
+
 function Bone:draw()
 
+	local x, y = self.body:getPosition()
+	local angle = self.body:getAngle()
 
-	love.graphics.translate(self.body:getX(), self.body:getY())
-
-	love.graphics.rotate(self.body:getAngle())
-
+	-- BONE
 	love.graphics.setColor(0.8, 0.8, 0.8)
-	love.graphics.rectangle('fill', -self.ox, -self.oy, self.width, self.height)
+	love.graphics.draw(pixel, x, y, angle, self.width, self.height, self.ox / self.width, self.oy / self.height, nil, nil)
 
+	-- AABB
+	love.graphics.setColor(0.2, 0.2, 0.8)
+	local topLeftX, topLeftY, bottomRightX, bottomRightY = self.shape:computeAABB( x, y, self.body:getAngle(), 1 )
+	love.graphics.polygon('line', topLeftX, topLeftY, bottomRightX, topLeftY, bottomRightX, bottomRightY, topLeftX, bottomRightY)
+
+	-- CENTER
 	love.graphics.setColor( 0.8, 0.2, 0.2 )
-	love.graphics.circle('fill', 0, 0, 3, nil)
+	love.graphics.circle('fill', x , y, 3, nil)
 
-	love.graphics.translate(-self.body:getX(), -self.body:getY())
+	-- JOINT A
+	love.graphics.setColor( 0.8, 0.2, 0.2 )
+	love.graphics.circle('fill', self.jointAx, self.jointAy, 3, nil)
+
+	-- JOINT B
+	love.graphics.setColor( 0.8, 0.2, 0.2 )
+	love.graphics.circle('fill', self.jointBx, self.jointBy, 3, nil)
+
+
+end
+
+function Bone:getJointPosition(joint)
+
+	if joint == 2 then
+		return self.jointBx, self.jointBy
+
+	return self.jointAx, self.jointAy
 end
 
 return Bone

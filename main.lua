@@ -2,6 +2,7 @@
 local Bone = require 'Bone'
 
 local bones = {}
+local joints = {}
 local floor
 
 
@@ -16,10 +17,32 @@ function love.load()
 
 
 	-- CREATE BONES
-	local numBones = 10
-	for i = 1, numBones do
-		table.insert( bones, Bone:new(100) )
-	end
+	-- local numBones = 10
+	-- for i = 1, numBones do
+	-- 	table.insert( bones, Bone:new(100) )
+	-- end
+
+	-- for i = 1, numBones - 1, 2 do
+	-- 	local joint = love.physics.newRevoluteJoint(bones[i].body, bones[i + 1].body, 0, 0, false)
+		
+	-- 	table.insert( joints, joint )
+	-- end
+
+
+
+	plate = Bone:new(200)
+
+	a = {}
+	a.body = love.physics.newBody(world, 200, 200, "static")
+
+
+	plate.body:applyAngularImpulse(1000)
+
+	--b = love.physics.newBody(world, 190, 100, "dynamic")
+
+
+
+	local joint = love.physics.newRevoluteJoint(plate.body, a.body, 200, 200, false)
 
 
 
@@ -28,6 +51,8 @@ end
 function love.update(dt)
 
 	world:update(dt)
+
+	plate:update()
 	
 end
 
@@ -41,6 +66,7 @@ function love.draw()
 		bone:draw()
 	end
 
+	plate:draw()
 
 end
 
@@ -58,6 +84,8 @@ function getFloor(width, height)
 	f.body = love.physics.newBody( world, 0, height - f.height, 'static' )
 	f.shape = love.physics.newRectangleShape(f.width / 2, f.height / 2, f.width, f.height )
 	f.fixture = love.physics.newFixture( f.body, f.shape )
+
+	f.fixture:setRestitution(0)
 
 	return f
 
