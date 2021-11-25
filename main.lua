@@ -1,4 +1,5 @@
 
+local Bug = require 'Bug'
 local Bone = require 'Bone'
 
 local bones = {}
@@ -30,20 +31,37 @@ function love.load()
 
 
 
-	plate = Bone:new(200)
+	-- local NUM_BUGS = 10
+
+	-- for i = 1, NUM_BUGS do
+	-- 	local bug = Bug:new
+		
+		
+	-- end
+
+
+
+	plate = Bone:new(100)
+	plate2 = Bone:new(100)
+	--plate.body:applyAngularImpulse(100000)
 
 	a = {}
 	a.body = love.physics.newBody(world, 200, 200, "static")
 
 
-	plate.body:applyAngularImpulse(1000)
+
+
 
 	--b = love.physics.newBody(world, 190, 100, "dynamic")
 
 
 
-	local joint = love.physics.newRevoluteJoint(plate.body, a.body, 200, 200, false)
+	local jointX, jointY = plate:getJointPosition(1)
+	local joint = love.physics.newRevoluteJoint(plate.body, a.body, jointX, jointY, false)
 
+	jointX, jointY = plate2:getJointPosition(2)
+	local joint2 = love.physics.newRevoluteJoint(plate2.body, plate.body, jointX, jointY, false)
+	
 
 
 end
@@ -53,6 +71,7 @@ function love.update(dt)
 	world:update(dt)
 
 	plate:update()
+	plate2:update()
 	
 end
 
@@ -67,6 +86,7 @@ function love.draw()
 	end
 
 	plate:draw()
+	plate2:draw()
 
 end
 

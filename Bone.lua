@@ -30,14 +30,8 @@ end
 
 function Bone:update()
 
-	local angle = self.body:getAngle()
-	local x, y = self.body:getPosition()
-
-	self.jointAx = x + math.cos( angle ) * self.jointDistance
-	self.jointAy = y + math.sin( angle ) * self.jointDistance
-
-	self.jointBx = x - math.cos( angle ) * self.jointDistance
-	self.jointBy = y - math.sin( angle ) * self.jointDistance
+	self:setJointPosition()
+	
 end
 
 function Bone:draw()
@@ -63,7 +57,7 @@ function Bone:draw()
 	love.graphics.circle('fill', self.jointAx, self.jointAy, 3, nil)
 
 	-- JOINT B
-	love.graphics.setColor( 0.8, 0.2, 0.2 )
+	love.graphics.setColor( 0, 0.5, 0 )
 	love.graphics.circle('fill', self.jointBx, self.jointBy, 3, nil)
 
 
@@ -71,10 +65,42 @@ end
 
 function Bone:getJointPosition(joint)
 
+	if self.jointAx == nil then
+		self:setJointPosition()
+	end
+
+
 	if joint == 2 then
 		return self.jointBx, self.jointBy
+	end
 
 	return self.jointAx, self.jointAy
 end
+
+
+function Bone:setJointPosition()
+	local angle = self.body:getAngle()
+	local x, y = self.body:getPosition()
+
+	self.jointAx = x + math.cos( angle ) * self.jointDistance
+	self.jointAy = y + math.sin( angle ) * self.jointDistance
+
+	self.jointBx = x - math.cos( angle ) * self.jointDistance
+	self.jointBy = y - math.sin( angle ) * self.jointDistance
+end
+
+function Bone:attachBone(bone)
+	local otherX, otherY = bone:getJointPosition(2)
+
+	local x, y = self.body:getPosition()
+
+	local angle = self.body:getAngle()
+
+	x = x + math.cos( angle ) * self.jointDistance
+	y = y + math.sin( angle ) * self.jointDistance
+
+	self.body:setPosition(x, y)
+end
+
 
 return Bone
