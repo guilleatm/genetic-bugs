@@ -3,7 +3,10 @@ local Bone = {}
 love.graphics.setDefaultFilter("nearest", "nearest")
 local pixel = love.graphics.newImage("pixel.jpg")
 
-function Bone:new(lenght)
+function Bone:new(lenght, angle)
+
+	angle = angle or 0
+
 	local b = {}
 
 	b.width = lenght
@@ -13,6 +16,7 @@ function Bone:new(lenght)
 	b.oy = b.height * 0.5
 
 	b.body = love.physics.newBody( world, 200, 200, 'dynamic' )
+	b.body:setAngle(angle)
 	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
 	b.fixture = love.physics.newFixture( b.body, b.shape )
 
