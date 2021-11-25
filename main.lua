@@ -43,6 +43,7 @@ function love.load()
 
 	plate = Bone:new(100)
 	plate2 = Bone:new(100)
+	plate3 = Bone:new(50)
 	--plate.body:applyAngularImpulse(100000)
 
 	a = {}
@@ -59,9 +60,12 @@ function love.load()
 	local jointX, jointY = plate:getJointPosition(1)
 	local joint = love.physics.newRevoluteJoint(plate.body, a.body, jointX, jointY, false)
 
-	jointX, jointY = plate2:getJointPosition(2)
-	local joint2 = love.physics.newRevoluteJoint(plate2.body, plate.body, jointX, jointY, false)
+	-- jointX, jointY = plate2:getJointPosition(2)
+	-- local joint2 = love.physics.newRevoluteJoint(plate2.body, plate.body, jointX, jointY, false)
 	
+
+	plate2:attachBone(plate)
+	plate3:attachBone(plate2)
 
 
 end
@@ -72,6 +76,7 @@ function love.update(dt)
 
 	plate:update()
 	plate2:update()
+	plate3:update()
 	
 end
 
@@ -87,6 +92,7 @@ function love.draw()
 
 	plate:draw()
 	plate2:draw()
+	plate3:draw()
 
 end
 

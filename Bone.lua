@@ -31,7 +31,6 @@ end
 function Bone:update()
 
 	self:setJointPosition()
-	
 end
 
 function Bone:draw()
@@ -82,24 +81,29 @@ function Bone:setJointPosition()
 	local angle = self.body:getAngle()
 	local x, y = self.body:getPosition()
 
-	self.jointAx = x + math.cos( angle ) * self.jointDistance
-	self.jointAy = y + math.sin( angle ) * self.jointDistance
 
-	self.jointBx = x - math.cos( angle ) * self.jointDistance
-	self.jointBy = y - math.sin( angle ) * self.jointDistance
+	self.jointAx = x - math.cos( angle ) * self.jointDistance
+	self.jointAy = y - math.sin( angle ) * self.jointDistance
+
+	self.jointBx = x + math.cos( angle ) * self.jointDistance
+	self.jointBy = y + math.sin( angle ) * self.jointDistance
+
+
 end
 
-function Bone:attachBone(bone)
-	local otherX, otherY = bone:getJointPosition(2)
+function Bone:attachBone(other)
+	local otherX, otherY = other:getJointPosition(2)
 
 	local x, y = self.body:getPosition()
 
 	local angle = self.body:getAngle()
 
-	x = x + math.cos( angle ) * self.jointDistance
-	y = y + math.sin( angle ) * self.jointDistance
+	x = otherX + math.cos( angle ) * self.jointDistance
+	y = otherY + math.sin( angle ) * self.jointDistance
 
 	self.body:setPosition(x, y)
+
+	self.joint = love.physics.newRevoluteJoint(self.body, other.body, otherX, otherY, false)
 end
 
 
