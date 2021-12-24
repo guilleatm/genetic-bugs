@@ -1,6 +1,5 @@
 
 local Bug = require 'Bug'
-
 local bones = {}
 local joints = {}
 local floor
@@ -13,7 +12,8 @@ function love.load()
 
 	-- CREATE WORLD
 	world = love.physics.newWorld( 0, 980, false )
-	floor = getFloor( width, height )
+	floor = getFloor( width * 200, height )
+	--floor = getFloor( 0, 0 )
 
 
 	-- CREATE BONES
@@ -67,13 +67,14 @@ function love.load()
 	-- plate3:attachBone(plate2)
 
 
-	bug = Bug:new(10)
+	bug = Bug:new(100)
 	bug:generate()
 
 
 	local anchor = love.physics.newBody(world, 200, 200, "static")
 	local jointX, jointY = bug.bones[1]:getJointPosition(1)
 	local joint = love.physics.newRevoluteJoint(anchor, bug.bones[1].body, jointX, jointY, false)
+	
 
 
 end

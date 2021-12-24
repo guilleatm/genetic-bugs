@@ -24,13 +24,13 @@ function Bug:generate(dna)
 
 	local bones = {}
 
-	local base = Bone:new(100, 0) -- length, angle
+	local base = Bone:new(20, 0) -- length, angle
 
 	table.insert(bones, base)
 
 	for i = 2, self.numBones do
 
-			local bone = Bone:new(50, 0)
+			local bone = Bone:new(30, 0)
 			bone:attachBone(bones[i - 1])
 			table.insert( bones, bone )
 	end

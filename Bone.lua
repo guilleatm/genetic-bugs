@@ -15,12 +15,12 @@ function Bone:new(lenght, angle)
 	b.ox = b.width * 0.5
 	b.oy = b.height * 0.5
 
-	b.body = love.physics.newBody( world, 200, 200, 'dynamic' )
+	b.body = love.physics.newBody( world, love.math.random() * 0, 100, 'dynamic' )
 	b.body:setAngle(angle)
 	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
 	b.fixture = love.physics.newFixture( b.body, b.shape )
 
-	b.fixture:setRestitution(0)
+	b.fixture:setRestitution(0.4)
 
 	b.jointDistance = b.width * 0.45
 
