@@ -31,6 +31,72 @@ function Bone:new(lenght, angle)
 	return b
 end
 
+function Bone:new2(dotA, dotB)
+
+	local dx = dotB.x - dotA.x
+	local dy = dotB.y - dotA.y
+
+	local h = math.sqrt(dx^2 + dy^2)
+	--local angle = math.atan(c2 / c1)
+	
+
+
+	local angle = dotA:angle(dotB)
+
+	local x, y = dotA.x + dx / 2 , dotA.y + dy / 2 
+
+
+	local b = {}
+
+	b.width = h
+	b.height = 10
+
+	b.ox = b.width * 0.5
+	b.oy = b.height * 0.5
+
+	b.body = love.physics.newBody( world, x, y, 'dynamic' )
+	b.body:setAngle(-angle)
+	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
+	b.fixture = love.physics.newFixture( b.body, b.shape )
+
+	b.fixture:setRestitution(0.4)
+
+	b.jointDistance = b.width * 0.5
+
+	b.fixture:setFilterData( 1, 65535, -1 )
+
+	b.jointed = false
+
+
+
+
+
+	setmetatable(b, self)
+	self.__index = self
+	return b
+
+end
+
+function Bone:joint2(other, dot)
+
+	print("create joint")
+
+	local otherX, otherY = dot.x, dot.y
+
+	local x, y = self.body:getPosition()
+
+	local angle = self.body:getAngle()
+
+	x = otherX + math.cos( angle ) * self.jointDistance
+	y = otherY + math.sin( angle ) * self.jointDistance
+
+	--self.body:setPosition(x, y)
+
+	print(other.body, self.body, dot.x, dot.y)
+
+	self.joint = love.physics.newRevoluteJoint(other.body, self.body, dot.x, dot.y, false)
+end
+
 
 function Bone:update()
 
@@ -44,6 +110,9 @@ function Bone:draw()
 
 	-- BONE
 	love.graphics.setColor(0.8, 0.8, 0.8)
+	if self.jointed then
+		love.graphics.setColor(0.3, 0.9, 0.8)
+	end
 	love.graphics.draw(pixel, x, y, angle, self.width, self.height, self.ox / self.width, self.oy / self.height, nil, nil)
 
 	-- AABB

@@ -15,6 +15,8 @@ function love.load()
 	floor = getFloor( width * 200, height )
 	--floor = getFloor( 0, 0 )
 
+	math.randomseed(os.time(nil))
+
 
 	-- CREATE BONES
 	-- local numBones = 10
@@ -67,7 +69,7 @@ function love.load()
 	-- plate3:attachBone(plate2)
 
 
-	bug = Bug:new(100)
+	bug = Bug:new(5)
 	bug:generate()
 
 
@@ -81,11 +83,17 @@ end
 
 function love.update(dt)
 
-	world:update(dt)
+	if love.keyboard.isDown('escape') then
+		love.event.quit(0)
+	end
 
+	
+	if love.keyboard.isDown('space') then
+		world:update(dt)
 
+		
+	end
 	bug:update()
-
 	-- plate:update()
 	-- plate2:update()
 	-- plate3:update()
@@ -130,6 +138,7 @@ function getFloor(width, height)
 	f.fixture = love.physics.newFixture( f.body, f.shape )
 
 	f.fixture:setRestitution(0)
+	f.fixture:setFilterData( 1, 65535, 1 )
 
 	return f
 
