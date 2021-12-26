@@ -92,7 +92,9 @@ function Bug:generate(dna)
 
 			local bone = Bone:new2(dots[baseDotInx], dots[dotIndx])
 		
+			print(baseDotInx, dotIndx)
 			table.insert( boneJoints[baseDotInx], bone )
+			table.insert( boneJoints[dotIndx], bone )
 			table.insert( self.bones, bone )
 		end
 
@@ -109,7 +111,7 @@ function Bug:generate(dna)
 			e[1].jointed = true
 			e[b].jointed = true
 
-			print("joint: ", e[1], e[b])
+			--print("jointed: ", e[]1, e[b])
 		end
 
 	end
