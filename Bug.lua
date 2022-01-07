@@ -1,6 +1,9 @@
 local Bone = require 'Bone'
 local Dot = require 'Dot'
 
+local TIMER = 2
+local IMPULSE = 4000
+
 local Bug = {}
 
 love.graphics.setDefaultFilter("nearest", "nearest")
@@ -16,6 +19,8 @@ function Bug:new(numDots)
 	b.dots = {}
 
 	b.dnaPerBone = 6 + numDots - 1
+
+	b.timer = 4
 
 
 
@@ -47,7 +52,10 @@ end
 
 function Bug:generate(dna)
 
-	self.dna = "10010024002001003500200200400010020000003000000000"
+	self.dna = dna
+
+	--self.dna = "10010024002001003500200200400010020000003000000000"
+	--self.dna = "40327850982713495872190857290134859012875923485705"
 
 
 	-- CREATE DOTS
@@ -92,13 +100,14 @@ function Bug:generate(dna)
 
 			local bone = Bone:new2(dots[baseDotInx], dots[dotIndx])
 		
-			print(baseDotInx, dotIndx)
 			table.insert( boneJoints[baseDotInx], bone )
 			table.insert( boneJoints[dotIndx], bone )
 			table.insert( self.bones, bone )
 		end
 
 	end
+
+
 
 	-- JOIN BONES
 	self.joints = {}
@@ -111,9 +120,17 @@ function Bug:generate(dna)
 			e[1].jointed = true
 			e[b].jointed = true
 
-			--print("jointed: ", e[]1, e[b])
 		end
 
+	end
+
+
+	self.legs = {}
+
+	for i, bone in ipairs(self.bones) do
+		if #bone.body:getJoints() < 2 then
+			table.insert( self.legs, bone )
+		end
 	end
 
 	self.dots = dots
@@ -139,7 +156,20 @@ function Bug:generateOld(dna)
 
 end
 
-function Bug:update()
+function Bug:update(dt)
+
+	self.timer = self.timer - dt
+	if self.timer <= 0 then
+		self.timer = TIMER
+
+		for i, leg in ipairs(self.legs) do
+			leg.body:applyAngularImpulse(IMPULSE)
+		end
+
+		
+	end
+
+
 	
 	for i, bone in ipairs(self.bones) do
 		bone:update()
@@ -150,18 +180,54 @@ end
 function Bug:draw()
 
 	for i, bone in ipairs(self.bones) do
-		bone:draw()
+		bone:draw(self.winner)
 	end
 
-	for i, dot in ipairs(self.dots) do
-		dot:draw()
-	end
+	local punctuation = self:getPunctuation()
 
-	for i, dot in ipairs(self.joints) do
-		dot:drawJoint()
+
+	local char = "|"
+	love.graphics.setColor(1, 1, 1)
+	if self.winner then
+		love.graphics.setColor(1, 1, 0)
+		char = "w"
 	end
+	love.graphics.print( char, punctuation, 50)
+
+
+	-- for i, dot in ipairs(self.dots) do
+	-- 	dot:draw()
+	-- end
+
+	-- for i, dot in ipairs(self.joints) do
+	-- 	dot:drawJoint()
+	-- end
+
+	-- for i, center in ipairs(self.centers) do
+	-- 	center:draw()
+	-- end
 
 end
 
+
+function Bug:getPunctuation()
+
+	local sum, count = 0, 0
+	for i, bone in ipairs(self.bones) do
+		sum = sum + bone.jointAx + bone.jointBx
+		count = count + 1
+	end
+
+	return sum / count
+
+
+
+	-- local sum = 0
+	-- for i, e in ipairs(self.joints) do
+	-- 	sum = sum + e.x
+	-- end
+
+	-- return sum / #self.joints
+end
 
 return Bug

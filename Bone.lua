@@ -79,8 +79,6 @@ end
 
 function Bone:joint2(other, dot)
 
-	print("create joint")
-
 	local otherX, otherY = dot.x, dot.y
 
 	local x, y = self.body:getPosition()
@@ -92,8 +90,6 @@ function Bone:joint2(other, dot)
 
 	--self.body:setPosition(x, y)
 
-	print(other.body, self.body, dot.x, dot.y)
-
 	self.joint = love.physics.newRevoluteJoint(other.body, self.body, dot.x, dot.y, false)
 end
 
@@ -103,15 +99,15 @@ function Bone:update()
 	self:setJointPosition()
 end
 
-function Bone:draw()
+function Bone:draw(winner)
 
 	local x, y = self.body:getPosition()
 	local angle = self.body:getAngle()
 
 	-- BONE
-	love.graphics.setColor(0.8, 0.8, 0.8)
-	if self.jointed then
-		love.graphics.setColor(0.3, 0.9, 0.8)
+	love.graphics.setColor(0.3, 0.9, 0.8)
+	if winner then
+		love.graphics.setColor(1, 1, 0)
 	end
 	love.graphics.draw(pixel, x, y, angle, self.width, self.height, self.ox / self.width, self.oy / self.height, nil, nil)
 

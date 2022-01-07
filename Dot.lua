@@ -6,6 +6,8 @@ local MAX_HEIGHT = 100
 local HEIGHT_OFFSET = 200
 local WIDTH_OFFSET = 100
 
+local SCALE_FACTOR = 0.15
+
 
 function Dot:new(x, y)
 
@@ -13,8 +15,8 @@ function Dot:new(x, y)
 
 	local _height  = love.graphics.getHeight()
 
-	d.x = x + WIDTH_OFFSET
-	d.y = _height - y - HEIGHT_OFFSET
+	d.x = x * SCALE_FACTOR  + WIDTH_OFFSET
+	d.y = _height - y * SCALE_FACTOR - HEIGHT_OFFSET
 
 	
 	setmetatable(d, self)
