@@ -56,10 +56,13 @@ function Bone:new2(dotA, dotB)
 
 	b.body = love.physics.newBody( world, x, y, 'dynamic' )
 	b.body:setAngle(-angle)
+	-- #T PRUEBA
+	b.body:setMass(0.1)
 	b.shape = love.physics.newRectangleShape( 0, 0, b.width, b.height )
 	b.fixture = love.physics.newFixture( b.body, b.shape )
 
-	b.fixture:setRestitution(0.4)
+	b.fixture:setRestitution(0)
+	b.fixture:setFriction(1)
 
 	b.jointDistance = b.width * 0.5
 

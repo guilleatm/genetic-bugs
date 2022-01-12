@@ -131,6 +131,8 @@ function Bug:generate(dna)
 
 	for i, bone in ipairs(self.bones) do
 		if #bone.body:getJoints() < 2 then
+			-- #T PRUEBA
+			bone.body:setMass(1)
 			table.insert( self.legs, bone )
 		end
 	end
@@ -219,20 +221,30 @@ end
 -- FITNESS FUNCTION
 function Bug:getPunctuation()
 
+	-- MEAN
+
+	local sum = 0
+	for i, bone in ipairs(self.bones) do
+	local mean = (bone.jointAx + bone.jointBx) / 2
+		sum = sum + mean
+	end
+
+	return sum / #self.bones
+
 
 	-- MIN
 
-	local min = 100000
-	for i, bone in ipairs(self.bones) do
+	-- local min = 100000
+	-- for i, bone in ipairs(self.bones) do
 
-		min = math.min( bone.jointAx, bone.jointBx, min)
+	-- 	min = math.min( bone.jointAx, bone.jointBx, min)
 
-	end
+	-- end
 
-	return min
+	-- return min
 
 
-	-- MEAN
+	-- MEAN DISTORSIONED
 
 	-- local sum, count = 0, 0
 	-- for i, bone in ipairs(self.bones) do
@@ -241,6 +253,16 @@ function Bug:getPunctuation()
 	-- end
 
 	-- return sum / count
+
+	-- MEAN + POTENTIAL BONES
+
+	-- local sum = 0
+	-- for i, bone in ipairs(self.bones) do
+	-- local mean = (bone.jointAx + bone.jointBx) / 2
+	-- 	sum = sum + mean
+	-- end
+
+	-- return (7 * sum / #self.bones) * 0.2
 end
 
 return Bug

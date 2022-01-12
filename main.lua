@@ -128,6 +128,7 @@ function getFloor(width, height)
 
 	f.fixture:setRestitution(0)
 	f.fixture:setFilterData( 1, 65535, 1 )
+	f.fixture:setFriction(1)
 
 	return f
 
