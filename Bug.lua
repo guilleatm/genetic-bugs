@@ -223,13 +223,13 @@ function Bug:getPunctuation()
 
 	-- MEAN
 
-	local sum = 0
-	for i, bone in ipairs(self.bones) do
-	local mean = (bone.jointAx + bone.jointBx) / 2
-		sum = sum + mean
-	end
+	-- local sum = 0
+	-- for i, bone in ipairs(self.bones) do
+	-- local mean = (bone.jointAx + bone.jointBx) / 2
+	-- 	sum = sum + mean
+	-- end
 
-	return sum / #self.bones
+	-- return sum / #self.bones
 
 
 	-- MIN
@@ -246,13 +246,13 @@ function Bug:getPunctuation()
 
 	-- MEAN DISTORSIONED
 
-	-- local sum, count = 0, 0
-	-- for i, bone in ipairs(self.bones) do
-	-- 	sum = sum + bone.jointAx + bone.jointBx
-	-- 	count = count + 1
-	-- end
+	local sum, count = 0, 0
+	for i, bone in ipairs(self.bones) do
+		sum = sum + bone.jointAx + bone.jointBx
+		count = count + 1
+	end
 
-	-- return sum / count
+	return sum / count
 
 	-- MEAN + POTENTIAL BONES
 
@@ -262,7 +262,7 @@ function Bug:getPunctuation()
 	-- 	sum = sum + mean
 	-- end
 
-	-- return (7 * sum / #self.bones) * 0.2
+	-- return sum * 0.1
 end
 
 return Bug
