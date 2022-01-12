@@ -8,7 +8,7 @@ local floor
 
 local NUM_DOTS = 5
 local NUM_BUGS = 40
-local MUTATION_RATE = 6
+local MUTATION_RATE = 0.1
 
 local TIME_PER_GEN = 10
 
@@ -17,7 +17,6 @@ local bugs = {}
 local gen = 0
 
 local timer = TIME_PER_GEN
-
 
 
 function love.load()
@@ -31,7 +30,6 @@ function love.load()
 	--floor = getFloor( 0, 0 )
 
 	math.randomseed(os.time(nil))
-
 
 
 
@@ -70,6 +68,8 @@ function love.update(dt)
 
 	
 	if love.keyboard.isDown('space') then
+		local l = world:getBodies()
+		print(#l)
 		--world:update(dt * 2)
 	else
 		world:update(dt)
@@ -160,9 +160,20 @@ function nextGen()
 
 
 
+
 	local sortfunction = function (a, b) return a:getPunctuation() > b:getPunctuation() end
 
 	table.sort( bugs, sortfunction )
+
+
+	if gen == 40 then
+		print("\nGEN 40 REACHED\n")
+		print("Max punctuation: " .. bugs[1]:getPunctuation())
+		print("Dna: " .. bugs[1].dna)
+		print()
+	end
+
+
 
 	-- for i, e in ipairs(bugs) do
 	-- 	print(e:getPunctuation())
@@ -184,7 +195,7 @@ function nextGen()
 	--table.insert( dnas, bugs[2].dna )
 
 	local mutate = function (dna)
-		return Dna:mutate(dna, MUTATION_RATE)
+		return Dna:mutate(dna, 1)
 	end
 
 	local crossover = function (dna, dnb)
@@ -208,53 +219,18 @@ function nextGen()
 		apply(dnas, random)
 	end
 
-	-- -- MUTATION 1
-
-	-- for i = 1, math.floor(#bugs * MUTATION) do
-	-- 	local dna = Dna:mutate(bugs[i].dna, MUTATION_RATE)
-
-	-- 	table.insert( dnas, dna )
-	-- end
-
-	-- -- CROSSOVER 1
-
-	-- for i = 1, math.floor(#bugs * CROSSOVER), 2 do
-	-- 	local dna = Dna:crossover(bugs[i].dna, bugs[i + 1].dna)
-	-- 	dna = Dna:mutate(dna, MUTATION_RATE)
-
-	-- 	table.insert( dnas, dna )
-	-- end
-
-	-- --CROSSOVER 2
-
-	-- for i = 1, math.floor(#bugs * CROSSOVER), 2 do
-	-- 	local dna = Dna:crossover(bugs[i].dna, bugs[i + 1].dna)
-	-- 	dna = Dna:mutate(dna, MUTATION_RATE)
-
-	-- 	table.insert( dnas, dna )
-	-- end
-
-	-- -- DOUBLE CROSSOVER 1
-
-	-- for i = 1, math.floor(#bugs * TRIPLE_CROSSOVER), 3 do
-	-- 	local dna = Dna:crossover(bugs[i].dna, bugs[i + 1].dna)
-	-- 	dna = Dna:crossover(dna, bugs[i + 2].dna)
-
-	-- 	table.insert( dnas, dna )
-	-- end
-
-
 	
-	-- -- RANDOM
-
-	-- for i = 1, math.floor(#bugs * RANDOM) do
-	-- 	local dna = Dna:random(NUM_DOTS)
-
-	-- 	table.insert( dnas, dna )
-	-- end
 
 	--print(#dnas)
-	clean()
+	--clean()
+	world:destroy()
+	--world:release()
+	world = love.physics.newWorld(0, 980, true)
+
+	local width, height = love.graphics.getDimensions()
+
+	floor = getFloor( width * 200, height )
+	local wall = getWall (width, height)
 
 	bugs = {}
 
@@ -265,6 +241,7 @@ function nextGen()
 
 		local bug = Bug:new(NUM_DOTS)
 		bug:generate(dna)
+
 
 		if i == 1 then
 			bug.winner = true
@@ -304,6 +281,27 @@ function clean()
 	collectgarbage("collect")
 	print("mem: " .. collectgarbage("count"))
 	print()
+end
+
+function test()
+	local t = {}
+	local dna = "69002363369258259049862450949898593314686544601189"
+	local dnb = "62346328959283472935928729317592879582357275218575"
+
+	table.insert( t, dna )
+	for i = 1, 1000 do
+		
+		table.insert( t, Dna:crossover(dna, dnb) )
+
+	end
+
+
+	local l = #t[1]
+	for i, v in ipairs(t) do
+		if #v ~= l then
+			print("ERROR")
+		end
+	end
 end
 
 function exist(dna, dnas)

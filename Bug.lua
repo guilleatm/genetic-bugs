@@ -1,8 +1,10 @@
 local Bone = require 'Bone'
 local Dot = require 'Dot'
 
-local TIMER = 2
-local IMPULSE = 4000
+local TIMER = 0.1
+local IMPULSE = 60
+
+local MAX_ANGULAR_VEL = 10
 
 local Bug = {}
 
@@ -20,7 +22,7 @@ function Bug:new(numDots)
 
 	b.dnaPerBone = 6 + numDots - 1
 
-	b.timer = 4
+	b.timer = 1
 
 
 
@@ -163,9 +165,14 @@ function Bug:update(dt)
 		self.timer = TIMER
 
 		for i, leg in ipairs(self.legs) do
-			leg.body:applyAngularImpulse(IMPULSE)
+		local _impulse = IMPULSE * leg.width
+			leg.body:applyAngularImpulse(_impulse)
+		
+		
+			if leg.body:getAngularVelocity() > MAX_ANGULAR_VEL then
+				leg.body:setAngularVelocity(MAX_ANGULAR_VEL)
+			end
 		end
-
 		
 	end
 
@@ -209,25 +216,31 @@ function Bug:draw()
 
 end
 
-
+-- FITNESS FUNCTION
 function Bug:getPunctuation()
 
-	local sum, count = 0, 0
+
+	-- MIN
+
+	local min = 100000
 	for i, bone in ipairs(self.bones) do
-		sum = sum + bone.jointAx + bone.jointBx
-		count = count + 1
+
+		min = math.min( bone.jointAx, bone.jointBx, min)
+
 	end
 
-	return sum / count
+	return min
 
 
+	-- MEAN
 
-	-- local sum = 0
-	-- for i, e in ipairs(self.joints) do
-	-- 	sum = sum + e.x
+	-- local sum, count = 0, 0
+	-- for i, bone in ipairs(self.bones) do
+	-- 	sum = sum + bone.jointAx + bone.jointBx
+	-- 	count = count + 1
 	-- end
 
-	-- return sum / #self.joints
+	-- return sum / count
 end
 
 return Bug

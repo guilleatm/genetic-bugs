@@ -35,19 +35,18 @@ function Dna:crossover(dna, dnb)
 
 	local length = #dna
 
-	local cutBottom = math.random( 0, length )
+	local cutBottom = math.random( 1, length - 1 )
 
-	local cutTop = math.random( cutBottom, length )
+	local cutTop = math.random( cutBottom + 1, length )
 
 	local part = string.sub( dna, cutBottom, cutTop )
 
-	return string.sub(dnb, 0, cutBottom - 1 ) .. part .. string.sub(dnb, cutTop + 1, length )
-
+	return string.sub(dnb, 1, cutBottom - 1 ) .. part .. string.sub(dnb, cutTop + 1, length )
 end
 
 function Dna:mutate(dna, rate)
 
-	if math.random( 0, 100 ) > rate then return	dna end
+	if math.random( 0, 100 ) > rate * 100 then return dna end
 
 
 	local cut = math.random(1, #dna )
